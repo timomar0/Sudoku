@@ -1,0 +1,35 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build APK on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Unzip project
+      run: unzip Sudoku_Boris_Project.zip -d SudokuApp
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Build APK
+      run: |
+        cd SudokuApp
+        ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: Sudoku-Boris-APK
+        path: |
+          SudokuApp/app/build/outputs/apk/debug/app-debug.apk
